@@ -47,7 +47,7 @@ export function rota(metodos: Partial<Record<string, (ctx: Contexto) => Promise<
       if (error || !data.user) throw new ErroHttp(401, 'Sessão expirada, faça login novamente');
 
       const resultado = await fn({ req, res, db, userId: data.user.id });
-      if (!res.headersSent) res.status(req.method === 'POST' ? 201 : 200).json(resultado ?? { ok: true });
+      if (!res.headersSent) res.status(req.method === 'POST' ? 201 : 200).json(resultado === undefined ? { ok: true } : resultado);
     } catch (e) {
       const status = e instanceof ErroHttp ? e.status : 500;
       const msg = e instanceof Error ? e.message : String(e);

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Navigate, NavLink, Route, Routes, useParams } from 'react-router-dom';
+import { Link, Navigate, NavLink, Route, Routes, useParams } from 'react-router-dom';
 import { crud } from '../api';
 import type { Empresa, Equipe, Funcionario, Turno } from '../tipos';
 import EscalaView from './Escala';
@@ -42,13 +42,26 @@ export default function EmpresaPage() {
     recarregar();
   }, [recarregar]);
 
-  if (erro) return <p className="erro">{erro}</p>;
-  if (!dados) return <p>Carregando…</p>;
+  if (erro) return <p className="alerta-erro">{erro}</p>;
+  if (!dados) return <p className="sutil">Carregando…</p>;
   const props: DadosEmpresa = { ...dados, recarregar };
+  const { empresa } = dados;
 
   return (
     <>
-      <h2 className="sem-impressao">{dados.empresa.nome}</h2>
+      <div className="cabecalho-empresa sem-impressao">
+        <Link to="/" className="voltar">‹ Empresas</Link>
+        <h1>{empresa.nome}</h1>
+        <div className="chips">
+          {(empresa.municipio || empresa.uf) && <span className="chip">{[empresa.municipio, empresa.uf].filter(Boolean).join(' / ')}</span>}
+          <span className="chip">
+            Escala {empresa.regras.dias_trabalho_semana}x{7 - empresa.regras.dias_trabalho_semana}
+          </span>
+          <span className="chip">{empresa.regras.jornada_semanal_alvo_horas}h semanais</span>
+          <span className="chip">{dados.equipes.length} equipe(s)</span>
+          <span className="chip">{dados.funcionarios.filter((f) => f.ativo).length} funcionário(s) ativo(s)</span>
+        </div>
+      </div>
       <nav className="abas sem-impressao">
         <NavLink to="escala">Escala</NavLink>
         <NavLink to="funcionarios">Funcionários ({dados.funcionarios.length})</NavLink>

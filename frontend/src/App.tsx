@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from './api';
+import { Logo } from './Logo';
 import Login from './pages/Login';
 import Empresas from './pages/Empresas';
 import EmpresaPage from './pages/Empresa';
@@ -15,17 +16,21 @@ export default function App() {
     return () => data.subscription.unsubscribe();
   }, []);
 
-  if (sessao === undefined) return <p className="centro">Carregando…</p>;
+  if (sessao === undefined) return <p className="centro sutil">Carregando…</p>;
   if (!sessao) return <Login />;
 
+  const email = sessao.user.email ?? '';
   return (
     <>
       <header className="topo">
-        <Link to="/" className="marca">Escala 5x2</Link>
-        <span className="usuario">
-          {sessao.user.email}
-          <button className="link" onClick={() => supabase.auth.signOut()}>Sair</button>
-        </span>
+        <Link to="/" className="marca-link">
+          <Logo tamanho={30} />
+        </Link>
+        <div className="usuario">
+          <span className="avatar" aria-hidden="true">{email.slice(0, 1).toUpperCase()}</span>
+          <span className="usuario-email">{email}</span>
+          <button className="fantasma" onClick={() => supabase.auth.signOut()}>Sair</button>
+        </div>
       </header>
       <main className="conteudo">
         <Routes>

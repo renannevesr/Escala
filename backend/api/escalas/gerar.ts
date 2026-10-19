@@ -60,6 +60,18 @@ export default rota({
         p_dias: resultado.dias,
       }),
     );
-    return { id: escalaId, empresa_id: empresaId, ano, mes, seed, ...resultado };
+    // Mesmo formato do GET /api/escalas
+    return {
+      id: escalaId,
+      empresa_id: empresaId,
+      ano,
+      mes,
+      seed,
+      inicio: resultado.inicio,
+      fim: resultado.fim,
+      avisos: resultado.avisos,
+      resumo: { semanas: resultado.semanas, feriados: resultado.feriados },
+      dias: resultado.dias,
+    };
   },
 });

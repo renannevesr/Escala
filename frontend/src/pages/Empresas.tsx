@@ -34,17 +34,29 @@ export default function Empresas() {
   return (
     <div className="grade-2">
       <section>
-        <h2>Empresas</h2>
-        {erro && <p className="erro">{erro}</p>}
-        {empresas.length === 0 && <p className="sutil">Nenhuma empresa cadastrada ainda.</p>}
-        <ul className="lista">
+        <div className="titulo-pagina">
+          <h1>Empresas</h1>
+          <p className="sutil">Clientes com escala organizada pelo sistema.</p>
+        </div>
+        {erro && <p className="alerta-erro">{erro}</p>}
+        {empresas.length === 0 && !erro && (
+          <div className="vazio">
+            <strong>Nenhuma empresa cadastrada ainda.</strong>
+            <span>Use o formulário ao lado para criar a primeira a partir de um modelo pronto.</span>
+          </div>
+        )}
+        <div className="cartoes-empresa">
           {empresas.map((e) => (
-            <li key={e.id}>
-              <Link to={`/empresas/${e.id}`}>{e.nome}</Link>
-              <span className="sutil">{[e.municipio, e.uf].filter(Boolean).join(' / ')}</span>
-            </li>
+            <Link key={e.id} to={`/empresas/${e.id}`} className="cartao-empresa">
+              <span className="iniciais">{e.nome.split(/\s+/).slice(0, 2).map((p) => p[0]).join('').toUpperCase()}</span>
+              <span>
+                <strong>{e.nome}</strong>
+                <small>{[e.municipio, e.uf].filter(Boolean).join(' / ') || 'Local não informado'}</small>
+              </span>
+              <span className="seta" aria-hidden="true">›</span>
+            </Link>
           ))}
-        </ul>
+        </div>
       </section>
       <section className="cartao">
         <h3>Nova empresa</h3>
@@ -70,7 +82,7 @@ export default function Empresas() {
           <fieldset>
             <legend>Começar a partir de</legend>
             {modelos.map((m) => (
-              <label key={m.id} className="opcao">
+              <label key={m.id} className={`opcao ${form.modelo === m.id ? 'selecionada' : ''}`}>
                 <input type="radio" name="modelo" checked={form.modelo === m.id} onChange={() => setForm({ ...form, modelo: m.id })} />
                 <span>
                   <strong>{m.nome}</strong>
@@ -78,7 +90,7 @@ export default function Empresas() {
                 </span>
               </label>
             ))}
-            <label className="opcao">
+            <label className={`opcao ${form.modelo === '' ? 'selecionada' : ''}`}>
               <input type="radio" name="modelo" checked={form.modelo === ''} onChange={() => setForm({ ...form, modelo: '' })} />
               <span>
                 <strong>Em branco</strong>
