@@ -15,7 +15,7 @@ export default function Login() {
     const { error } =
       modo === 'entrar'
         ? await supabase.auth.signInWithPassword({ email, password: senha })
-        : await supabase.auth.signUp({ email, password: senha });
+        : await supabase.auth.signUp({ email, password: senha, options: { emailRedirectTo: window.location.origin } });
     setCarregando(false);
     if (error) setMsg(error.message);
     else if (modo === 'cadastrar') setMsg('Conta criada. Se o Supabase pedir confirmação, verifique seu e-mail.');
